@@ -195,13 +195,16 @@ html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 nav#nav,footer{display:none!important}
 .slide{position:relative;width:100vw;height:100vh;height:100svh;overflow:hidden;background:#000}
-.slide>.page{position:absolute;top:0;left:0;width:1440px;min-height:0!important;height:auto;transform-origin:0 0;border-top:none;--pad:64px;padding:48px 64px 96px!important;box-sizing:border-box}
+.slide>.page{position:absolute;top:0;left:0;width:1440px;min-height:0!important;height:auto;transform-origin:0 0;border-top:none;--pad:64px;padding:40px 64px 56px!important;box-sizing:border-box}
 .slide>.page.cover{padding:24px!important}
+.slide>.page.has-chips{padding-bottom:88px!important}
+#contents{padding-top:28px!important;padding-bottom:40px!important}
 .cover-card{min-height:0!important;flex:1}
 .portrait.slot{min-height:0!important;height:640px}
 #contents .toc .thumb{width:66%!important}
 #contents .toc .t,#contents .toc ul{width:66%!important}
 .rv{opacity:1!important;transform:none!important;transition:none!important}
+.page img{object-fit:contain}
 #progress{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);z-index:99;background:linear-gradient(90deg,#4a3aa8,#c8402f,#e8743b)}
 /* reveal system */
 .m-line{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
@@ -213,8 +216,10 @@ nav#nav,footer{display:none!important}
 .a-line.m-in{transform:none}
 .a-media{clip-path:inset(100% 0 0 0);transition:clip-path 1.5s cubic-bezier(.16,1,.3,1)}
 .a-media.m-in{clip-path:inset(0 0 0 0)}
-.a-media>*{transform:scale(1.12);transition:transform 1.8s cubic-bezier(.16,1,.3,1)}
-.a-media.m-in>*{transform:none}
+.a-media:not(svg)>*{transform:scale(1.12);transition:transform 1.8s cubic-bezier(.16,1,.3,1)}
+.a-media.m-in:not(svg)>*{transform:none}
+svg.a-media{transform:scale(1.08);transition:clip-path 1.5s cubic-bezier(.16,1,.3,1),transform 1.8s cubic-bezier(.16,1,.3,1)}
+svg.a-media.m-in{transform:none}
 .cover-card{transition:none;will-change:transform}
 .toc .thumb{transition:transform .5s,box-shadow .5s}
 .toc a:hover .thumb{transform:translateY(-6px);box-shadow:0 18px 40px rgba(232,116,59,.18)}
@@ -474,14 +479,14 @@ nav#nav,footer{display:none!important}
       <div class="label">Background</div>
       <p class="body">Hsp90 is a chaperone protein that helps tau aggregate in Alzheimer's disease. LA1011, a new dihydropyridine derivative, binds Hsp90 and could be a neuroprotective therapeutic.</p>
       <p class="body">I experimentally determined the structure of Hsp90 in complex with LA1011. I used a series of ITC experiments, including the co-chaperone FKBP51, to measure binding strength and competition, and crystallography to visualise where the drug binds, giving a starting point for future structural changes.</p>
-      <div style="height:1px;background:var(--line);margin:34px 0 22px"></div>
+      
+    </div>
+    <div class="rv" style="display:flex;flex-direction:column"><div class="slot tall" data-img="images/hsp90.jpg" data-label="Structure render or lab photo"></div><div style="height:1px;background:var(--line);margin:22px 0 18px"></div>
       <h2 style="font-size:clamp(28px,40.32px,42px)">UKHSA Porton Down</h2>
       <div class="rule"></div>
       <div class="meta"><b>Sep 2023 – Apr 2024</b><span class="small">Medical Laboratory Assistant · Rare and Imported Pathogens Lab</span></div>
       <div class="rule"></div>
-      <p class="body">I processed diagnostic samples for national public-health surveillance in the UK Health Security Agency's Rare and Imported Pathogens Laboratory. Careful, documented work where getting it wrong has consequences, which is a habit I've carried into regulated AI.</p>
-    </div>
-    <div class="slot tall rv" data-img="images/hsp90.jpg" data-label="Structure render or lab photo"></div>
+      <p class="body">I processed diagnostic samples for national public-health surveillance in the UK Health Security Agency's Rare and Imported Pathogens Laboratory. Careful, documented work where getting it wrong has consequences, which is a habit I've carried into regulated AI.</p></div>
   </div>
   <div class="chips" style="position:absolute;left:50%;bottom:calc(var(--pad) * .5 + 26px);transform:translateX(-50%);justify-content:center;opacity:.55;margin:0;flex-wrap:nowrap"><span class="chip">Isothermal titration calorimetry</span><span class="chip">X-ray crystallography</span><span class="chip">Protein biochemistry</span></div>
 </section></div>
@@ -522,7 +527,7 @@ nav#nav,footer{display:none!important}
 
 <div class="slide"><section class="page detail" id="scicomm">
   <span class="pnum">15.</span>
-  <div class="rv" style="max-width:760px">
+  <div class="rv">
     <div class="top-rule" style="height:1px;background:var(--line);margin-bottom:22px"></div>
     <h2 style="font-size:clamp(44px,77.76px,84px);font-weight:600;line-height:1.02;letter-spacing:-.01em">Scientific communication</h2>
     <div style="height:1px;background:var(--line);margin-top:22px"></div>
@@ -594,13 +599,37 @@ addEventListener('scroll',()=>{
 var RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var slides=[].slice.call(document.querySelectorAll('.slide'));
 var nat=[];
-function measure(){slides.forEach(function(sl,i){var p=sl.firstElementChild;p.style.transform='none';p.style.height='auto';nat[i]=Math.max(p.offsetHeight,(p.classList.contains('cover')&&window.innerWidth<window.innerHeight*0.9)?760:300);});}
+function medias(p){return [].slice.call(p.querySelectorAll('svg,img,.slot')).filter(function(e){if(e.closest('.chips,.btn,.cover-card'))return false;if(e.tagName.toLowerCase()==='svg'&&e.parentElement.closest('svg'))return false;if(e.tagName==='IMG'&&e.closest('.slot'))return false;var r=e.getBoundingClientRect();return r.height>90&&r.width>90;});}
+function measure(){var vw=window.innerWidth,vh=window.innerHeight;var land=vw>=vh*0.9;var H=1440*vh/vw;
+ slides.forEach(function(sl,i){var p=sl.firstElementChild;p.style.transform='none';p.style.height='auto';
+  var ms=medias(p);ms.forEach(function(e){if(e._mh===undefined){e._mh=e.style.maxHeight;e._h=e.style.height;e._w=e.style.width;e._mn=e.style.minHeight;}e.style.maxHeight=e._mh;e.style.height=e._h;e.style.minHeight=e._mn;if(e.tagName==='IMG')e.style.width=e._w;});[].slice.call(p.querySelectorAll('.proj,.page>div[style*="grid-template-columns"]')).forEach(function(g){if(g._gc===undefined)g._gc=g.style.gridTemplateColumns;g.style.gridTemplateColumns=g._gc;});[].slice.call(p.querySelectorAll('p.body,p.small,.lede')).forEach(function(t){if(t._mw===undefined)t._mw=t.style.maxWidth;t.style.maxWidth=t._mw;});[].slice.call(p.querySelectorAll('.rule')).forEach(function(r){if(r._mg===undefined)r._mg=r.style.margin;r.style.margin=r._mg;});[].slice.call(p.querySelectorAll('.toc .thumb')).forEach(function(t){t.style.removeProperty('width');t.style.aspectRatio='';});
+  var n=p.offsetHeight;
+  if(land&&n>H&&!p.classList.contains('cover')){
+   var h0=ms.map(function(e){return e.getBoundingClientRect().height;});
+   var grids=[].slice.call(p.querySelectorAll('.proj,.page>div[style*="grid-template-columns"]'));
+   var texts=[].slice.call(p.querySelectorAll('p.body,p.small,.lede'));
+   var th=[].slice.call(p.querySelectorAll('.toc .thumb'));
+   var cols=[null,'minmax(0,1.3fr) minmax(0,1fr)','minmax(0,1.6fr) minmax(0,1fr)','minmax(0,2fr) minmax(0,1fr)'];
+   function setF(f){ms.forEach(function(e,k){var v=(h0[k]*f)+'px';if(e.classList.contains('slot')){e.style.height=v;e.style.minHeight='0';}else{e.style.maxHeight=v;if(e.tagName==='IMG'){e.style.width='auto';e.style.maxWidth='100%';e.style.marginLeft='auto';e.style.marginRight='auto';e.style.display='block';}}});
+     th.forEach(function(t){t.style.aspectRatio=String(0.64/Math.max(f,0.35));});}
+   function setC(c){grids.forEach(function(g){g.style.gridTemplateColumns=c===null?g._gc:c;});texts.forEach(function(t){t.style.maxWidth=c===null?t._mw:'none';});}
+   function fits(){return p.offsetHeight<=H;}
+   var rules=[].slice.call(p.querySelectorAll('.rule'));rules.forEach(function(r){r.style.margin='16px 0';});
+   var best=null;
+   for(var c=0;c<(grids.length?cols.length:1);c++){setC(cols[c]);setF(0.3);if(!fits())continue;
+     var lo=0.3,hi=1;setF(1);if(fits()){lo=1;}else{for(var it=0;it<8;it++){var mid=(lo+hi)/2;setF(mid);if(fits())lo=mid;else hi=mid;}}
+     if(!best||lo>best.f+0.08)best={c:c,f:lo};}
+   if(!best)best={c:grids.length?cols.length-1:0,f:0.3};
+   setC(cols[best.c]);setF(best.f);
+   n=p.offsetHeight;}
+  nat[i]=Math.max(n,(p.classList.contains('cover')&&!land)?760:300);});}
 function fit(){var vw=window.innerWidth,vh=window.innerHeight;
  slides.forEach(function(sl,i){var p=sl.firstElementChild;var s=Math.min(vw/1440,vh/nat[i]);var h=vh/s;
   var portrait=vw<vh*0.9;if(portrait){h=nat[i];sl.style.height=(nat[i]*s)+'px';}else{sl.style.height='';}
   p.style.height=h+'px';var x=(vw-1440*s)/2;p.style.transform='translate('+x+'px,0) scale('+s+')';});}
 function layout(){measure();fit();}
 document.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('.page').forEach(function(p){if(p.querySelector('.chips[style*="absolute"]'))p.classList.add('has-chips');});
  // build reveal targets
  function split(el){var walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null);var nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
   var k=0;nodes.forEach(function(n){if(!n.nodeValue.trim())return;var frag=document.createDocumentFragment();n.nodeValue.split(/(\s+)/).forEach(function(w){if(!w)return;if(/^\s+$/.test(w)){frag.appendChild(document.createTextNode(' '));return;}
@@ -616,9 +645,10 @@ document.addEventListener('DOMContentLoaded',function(){
  // stagger fades within each slide
  slides.forEach(function(sl){var k=0;sl.querySelectorAll('.a-fade').forEach(function(e){e.style.transitionDelay=(Math.min(k++,10)*0.06+0.15)+'s';});
   var m=0;sl.querySelectorAll('.a-media').forEach(function(e){e.style.transitionDelay=(0.1+0.12*m++)+'s';});});
- var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var t=e.target;(t._m||[t]).forEach(function(x){x.classList.add('m-in');});io.unobserve(t);}});},{threshold:0.01,rootMargin:'0px 0px -12% 0px'});
+ var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('m-in');io.unobserve(e.target);}});},{threshold:0.01,rootMargin:'0px 0px -12% 0px'});
  document.querySelectorAll('.a-split,.a-fade,.a-line').forEach(function(e){io.observe(e);});
- document.querySelectorAll('.a-media').forEach(function(e){var par=e.parentElement;if(!par._m){par._m=[];io.observe(par);}par._m.push(e);});
+ var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target._m.forEach(function(x){x.classList.add('m-in');});io2.unobserve(e.target);}});},{threshold:0.01,rootMargin:'0px 0px -12% 0px'});
+ document.querySelectorAll('.a-media').forEach(function(e){var par=e.parentElement;if(!par._m){par._m=[];io2.observe(par);}par._m.push(e);});
  }
  layout();
  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
